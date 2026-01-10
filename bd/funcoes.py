@@ -1,7 +1,13 @@
 import sqlite3
+import os
+
+#def conectaDB():
+#    conexao = sqlite3.connect('EBD.db')
+#    return conexao
 
 def conectaDB():
-    conexao = sqlite3.connect('EBD.db')
+    caminho = os.path.join(os.path.dirname(__file__), "EBD.db") 
+    conexao = sqlite3.connect(caminho) 
     return conexao
 
 def inseredados(nome, data_nasc, classe):
