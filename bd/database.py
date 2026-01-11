@@ -24,7 +24,7 @@ def database_segment():
 
     with cadastrar:
         nome = st.text_input('Nome')
-        data_nasc = st.date_input('Data Nascimento', min_value="01/01/1910", format="DD/MM/YYYY").strftime("%d/%m/%Y")
+        data_nasc = st.date_input('Data Nascimento', min_value=datetime.date(1910, 1, 1), format="DD/MM/YYYY").strftime("%d/%m/%Y")
         classe = st.selectbox('Turma', options=['Vencedores por Cristos', 'Soldados de Cristo', 'Jardim de Deus', 'Joias de Cristo'], index=None, placeholder='Selecione')
         sexo = st.selectbox('Sexo', options=['masculino', 'feminino'], index=None, placeholder='Selecione')
 
@@ -64,5 +64,6 @@ def database_segment():
         """
         )
     
+
 
 
