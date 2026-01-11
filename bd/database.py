@@ -1,6 +1,7 @@
 import streamlit as st
 from supabase import create_client, Client
 import os
+import datetime
 
 url = os.environ["SUPABASE_URL"]
 key = os.environ["SUPABASE_KEY"]
@@ -64,6 +65,7 @@ def database_segment():
         """
         )
     
+
 
 
 
