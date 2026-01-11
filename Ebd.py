@@ -9,11 +9,17 @@ key = os.environ["SUPABASE_KEY"]
 supabase = create_client(url, key)
 
 
+st.set_page_config(
+    page_icon= 'logo_ipb.png',
+    page_title= 'EBD IPSO'
+)
+
 st.title('Cadastro de Aluno Escola Biblica Dominical') #write
 
 nome = st.text_input('Nome')
-data_nasc = st.text_input('data_nasc')
-classe = st.text_input('classe')
+data_nasc = st.date_input('Data Nascimento', format="DD/MM/YYYY").strftime("%d/%m/%Y")
+classe = st.selectbox('Turma', options=['Vencedores por Cristos', 'Soldados de Cristo', 'Jardim de Deus', 'Joias de Cristo'], index=None, placeholder='Selecione')
+sexo = st.selectbox('Sexo', options=['masculino', 'feminino'], index=None, placeholder='Selecione')
 
 if st.button('Adicionar Aluno'):
     data = {
