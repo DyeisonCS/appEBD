@@ -17,7 +17,7 @@ def tabturmas():
     tabs = st.tabs(lista_unica)
     for tab, turma in zip(tabs, lista_unica):
         def listardados(turma):
-            df = supabase.table('alunos').select('classe').filter('classe','eq',turma).execute()
+            df = supabase.table('alunos').select('nome').filter('classe','eq',turma).execute()
             return df.data
         with tab:
             res = listardados(turma)
@@ -25,3 +25,4 @@ def tabturmas():
             df = pd.DataFrame(res)          #criando df
             df['presenca'] = False         #criando coluna de presença com todos pendente de presença
             st.data_editor(df) 
+
