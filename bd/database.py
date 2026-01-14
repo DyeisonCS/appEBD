@@ -1,5 +1,6 @@
 import streamlit as st
 from supabase import create_client, Client
+from bd import funcoes
 import pandas as pd
 import os
 import datetime
@@ -48,5 +49,6 @@ def database_segment():
     with ANIVERSARIANTES:
         st.tabs(["Dyeison", "Rafael"])
     
+
 
 
