@@ -43,14 +43,10 @@ def database_segment():
 
 
     with turmas:
-        res = supabase.table('alunos').select('nome', 'classe').execute()
-        st.write('Turmas:')             #header
-        df = pd.DataFrame(res.data)     #criando df
-        df['presenca'] = False          #criando coluna de presença com todos pendente de presença
-        st.data_editor(df)    
-        #st.table(tb)
+        funcoes.tabturmas()
 
     with ANIVERSARIANTES:
         st.tabs(["Dyeison", "Rafael"])
     
+
 
