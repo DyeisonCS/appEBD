@@ -1,26 +1,27 @@
-import sqlite3
+import streamlit as st
+from supabase import create_client, Client
+import pandas as pd
 import os
 
-#def conectaDB():
-#    conexao = sqlite3.connect('EBD.db')
-#    return conexao
+url = os.environ["SUPABASE_URL"]
+key = os.environ["SUPABASE_KEY"]
+supabase = create_client(url, key)
 
-def conectaDB():
-    caminho = os.path.join(os.path.dirname(__file__), "EBD.db") 
-    conexao = sqlite3.connect(caminho) 
-    return conexao
+turmas = supabase.table('alunos').select('classe').execute()
 
-def inseredados(nome, data_nasc, classe):
-    conexao = conectaDB()
-    cursor = conexao.cursor()
-    cursor.execute("INSERT INTO ALUNOS(nome, data_nasc, classe) VALUES(?, ?, ?)", (nome, data_nasc, classe))
-    conexao.commit()
-    conexao.close()
+df = pd.DataFrame(turmas.data)
+lista_unica = list(df['classe'].unique())
 
-def listardados():
-    conexao = conectaDB()
-    cursor = conexao.cursor()
-    cursor.execute("select * from Alunos")
-    dados = cursor.fetchall()
-    cursor.close()
-    return dados
+
+def tabturmas():
+    tabs = st.tabs(lista_unica)
+    for tab, turma in zip(tabs, lista_unica):
+        def listardados(turma):
+            df = supabase.table('alunos').select('classe').filter('classe','eq',turma).execute()
+            return df.data
+        with tab:
+            res = listardados(turma)
+            st.write('Turmas:')             #header
+            df = pd.DataFrame(res)          #criando df
+            df['presenca'] = False         #criando coluna de presença com todos pendente de presença
+            st.data_editor(df) 
