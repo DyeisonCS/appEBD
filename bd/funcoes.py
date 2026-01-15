@@ -27,36 +27,11 @@ def tabturmas():
             
 
             
-            # Inicializa estado
-            if f"edited_df_{turma}" not in st.session_state:
-                st.session_state[f"edited_df_{turma}"] = df.copy()
-            if f"salvo_{turma}" not in st.session_state:
-                st.session_state[f"salvo_{turma}"] = False
-
-            # Botão salvar
-            salvar = st.button('Salvar', key=f"salvar_{turma}")
-
-            # Se clicou salvar, bloqueia edição
-            if salvar:
-                st.session_state[f"salvo_{turma}"] = True
-
-            # Define colunas bloqueadas
-            disabled_cols = ["nome"]
-            if st.session_state[f"salvo_{turma}"]:
-                disabled_cols.append("presenca")
-
-            # Editor com estado persistente
-            edited_df = st.data_editor(
-                st.session_state[f"edited_df_{turma}"],
-                disabled=disabled_cols,
-                key=f"editor_{turma}"
-            )
-
-            # Atualiza estado com edições
-            st.session_state[f"edited_df_{turma}"] = edited_df
-
-            # Mensagem de sucesso
-            if st.session_state[f"salvo_{turma}"]:
-                st.success("Presenças salvas com sucesso!")
-                # Aqui você pode enviar para o banco:
+            edited_df = st.data_editor(df, disabled=["nome"], key=f"editor_{turma}") 
+            # Botão salvar 
+            if st.button('Salvar', key=f"salvar_{turma}"): 
+                # Aqui você já tem o edited_df com as presenças marcadas 
+                st.write("Dados salvos:") 
+                st.data_editor(edited_df, disabled=["nome", "presenca"], key=f"final_{turma}")
+                # Exemplo: enviar para supabase 
                 # supabase.table('alunos').upsert(edited_df.to_dict(orient="records")).execute()
