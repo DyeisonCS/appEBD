@@ -24,16 +24,25 @@ def tabturmas():
             st.write('Turmas:')             #header
             df = pd.DataFrame(res)          #criando df
             df['presenca'] = False         #criando coluna de presença com todos pendente de presença
-            # Verifica se o botão foi clicado 
-            # Editor retorna o df atualizado 
-            edited_df = st.data_editor(df, disabled=[item], key=f"editor_{turma}") 
-            # Botão salvar 
-            if st.button('Salvar', key=f"salvar_{turma}"): 
-                # Aqui você já tem o edited_df com as presenças marcadas 
-                st.write("Dados salvos:") 
-                st.data_editor(edited_df, disabled=["nome", "presenca"], key=f"final_{turma}")
-                # Exemplo: enviar para supabase 
+            
+            # Botão salvar
+            salvar = st.button('Salvar', key=f"salvar_{turma}")
+
+            # Define quais colunas ficam bloqueadas
+            if salvar:
+                disabled_cols = ["nome", "presenca"]
+            else:
+                disabled_cols = ["nome"]
+
+            # A MESMA tabela muda de estado conforme o botão
+            edited_df = st.data_editor(df, disabled=disabled_cols, key=f"editor_{turma}")
+
+            # Se salvar foi clicado, você já tem os dados editados
+            if salvar:
+                # Aqui você pode enviar para o banco
                 # supabase.table('alunos').upsert(edited_df.to_dict(orient="records")).execute()
+                st.success("Presenças salvas com sucesso!")
+
 
 
 
