@@ -24,10 +24,15 @@ def tabturmas():
             st.write('Turmas:')             #header
             df = pd.DataFrame(res)          #criando df
             df['presenca'] = False         #criando coluna de presença com todos pendente de presença
-            if st.button('Salvar'):
-                st.data_editor(df, disabled=True)
-            else:
+            # Verifica se o botão foi clicado 
+            salvar = st.button('Salvar', key=turma) 
+            if salvar:
+                # Bloqueia 'nome' e 'presenca' 
+                st.data_editor(df, disabled=["nome", "presenca"]) 
+            else: 
+                # Bloqueia apenas 'nome' 
                 st.data_editor(df, disabled=["nome"])
+
 
 
 
