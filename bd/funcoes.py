@@ -24,6 +24,7 @@ def tabturmas():
             st.write('Turmas:')             #header
             df = pd.DataFrame(res)          #criando df
             df['presenca'] = False         #criando coluna de presença com todos pendente de presença
-            st.data_editor(df, disabled=["nome"]) 
+            st.data_editor(df, disabled=["presenca"]) 
+
 
 
