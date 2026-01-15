@@ -25,19 +25,13 @@ def tabturmas():
             df = pd.DataFrame(res)          #criando df
             df['presenca'] = False         #criando coluna de presença com todos pendente de presença
             
+
             
             # Inicializa estado
             if f"edited_df_{turma}" not in st.session_state:
                 st.session_state[f"edited_df_{turma}"] = df.copy()
             if f"salvo_{turma}" not in st.session_state:
                 st.session_state[f"salvo_{turma}"] = False
-            
-            # Botão salvar
-            salvar = st.button('Salvar', key=f"salvar_{turma}")
-            
-            # Se clicou salvar, bloqueia edição
-            if salvar:
-                st.session_state[f"salvo_{turma}"] = True
             
             # Define colunas bloqueadas
             disabled_cols = ["nome"]
@@ -54,8 +48,12 @@ def tabturmas():
             # Atualiza estado com edições
             st.session_state[f"edited_df_{turma}"] = edited_df
             
-            # Mensagem de sucesso
-            if st.session_state[f"salvo_{turma}"]:
+            # Botão salvar
+            salvar = st.button('Salvar', key=f"salvar_{turma}")
+            
+            # Se clicou salvar, bloqueia edição
+            if salvar:
+                st.session_state[f"salvo_{turma}"] = True
                 st.success("Presenças salvas com sucesso!")
                 # Aqui você pode enviar para o banco:
                 # supabase.table('alunos').upsert(edited_df.to_dict(orient="records")).execute()
