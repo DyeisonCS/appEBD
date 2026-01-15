@@ -25,29 +25,37 @@ def tabturmas():
             df = pd.DataFrame(res)          #criando df
             df['presenca'] = False         #criando coluna de presença com todos pendente de presença
             
+            
+            # Inicializa estado
+            if f"edited_df_{turma}" not in st.session_state:
+                st.session_state[f"edited_df_{turma}"] = df.copy()
+            if f"salvo_{turma}" not in st.session_state:
+                st.session_state[f"salvo_{turma}"] = False
+            
             # Botão salvar
             salvar = st.button('Salvar', key=f"salvar_{turma}")
-
-            # Define quais colunas ficam bloqueadas
+            
+            # Se clicou salvar, bloqueia edição
             if salvar:
-                disabled_cols = ["nome", "presenca"]
-            else:
-                disabled_cols = ["nome"]
-
-            # A MESMA tabela muda de estado conforme o botão
-            edited_df = st.data_editor(df, disabled=disabled_cols, key=f"editor_{turma}")
-
-            # Se salvar foi clicado, você já tem os dados editados
-            if salvar:
-                # Aqui você pode enviar para o banco
-                # supabase.table('alunos').upsert(edited_df.to_dict(orient="records")).execute()
+                st.session_state[f"salvo_{turma}"] = True
+            
+            # Define colunas bloqueadas
+            disabled_cols = ["nome"]
+            if st.session_state[f"salvo_{turma}"]:
+                disabled_cols.append("presenca")
+            
+            # Editor com estado persistente
+            edited_df = st.data_editor(
+                st.session_state[f"edited_df_{turma}"],
+                disabled=disabled_cols,
+                key=f"editor_{turma}"
+            )
+            
+            # Atualiza estado com edições
+            st.session_state[f"edited_df_{turma}"] = edited_df
+            
+            # Mensagem de sucesso
+            if st.session_state[f"salvo_{turma}"]:
                 st.success("Presenças salvas com sucesso!")
-
-
-
-
-
-
-
-
-
+                # Aqui você pode enviar para o banco:
+                # supabase.table('alunos').upsert(edited_df.to_dict(orient="records")).execute()
