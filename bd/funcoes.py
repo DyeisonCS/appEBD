@@ -34,29 +34,20 @@ def tabturmas():
             # Tabela editável (antes de salvar)
             edited_df = st.data_editor(
                 df,
-                disabled=["nome"],
+                disabled=["nome"] if not st.session_state[saved_key] else ["nome", "presenca"],
                 key=f"editor_{turma}"
             )
             
             # Botão Salvar (desabilita após clique)
             if st.button('Salvar', key=f"salvar_{turma}", disabled=st.session_state[saved_key]):
                 st.session_state[saved_key] = True  # bloqueia o botão
-                st.write("Dados salvos:")
-                st.data_editor(
-                    edited_df,
-                    disabled=["nome", "presenca"],  # bloqueia tudo na tabela final
-                    key=f"final_{turma}"
-                )
-                # Exemplo: enviar para supabase
-                # supabase.table('alunos').upsert(edited_df.to_dict(orient="records")).execute()
+                st.success("Dados salvos!")
             
-            # Se já salvou, mantém a tabela final visível
+            # Se já salvou, mostra tabela bloqueada (com chave diferente)
             if st.session_state[saved_key]:
                 st.write("Dados salvos:")
                 st.data_editor(
                     edited_df,
                     disabled=["nome", "presenca"],
-                    key=f"final_{turma}"
+                    key=f"final_{turma}_view"  # chave única para evitar erro
                 )
-
-
