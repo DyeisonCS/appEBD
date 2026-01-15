@@ -26,28 +26,13 @@ def tabturmas():
             df['presenca'] = False         #criando coluna de presença com todos pendente de presença
             
             
-            # Flag para bloquear o botão após salvar
-            saved_key = f"salvo_{turma}"
-            if saved_key not in st.session_state:
-                st.session_state[saved_key] = False
-            
-            # Tabela editável (antes de salvar)
-            edited_df = st.data_editor(
-                df,
-                disabled=["nome"] if not st.session_state[saved_key] else ["nome", "presenca"],
-                key=f"editor_{turma}"
-            )
-            
-            # Botão Salvar (desabilita após clique)
-            if st.button('Salvar', key=f"salvar_{turma}", disabled=st.session_state[saved_key]):
-                st.session_state[saved_key] = True  # bloqueia o botão
-                st.success("Dados salvos!")
-            
-            # Se já salvou, mostra tabela bloqueada (com chave diferente)
-            if st.session_state[saved_key]:
-                st.write("Dados salvos:")
-                st.data_editor(
-                    edited_df,
-                    disabled=["nome", "presenca"],
-                    key=f"final_{turma}_view"  # chave única para evitar erro
-                )
+            # Editor retorna o df atualizado 
+            edited_df = st.data_editor(df, disabled=["nome"], key=f"editor_{turma}") 
+            # Botão salvar 
+            if st.button('Salvar', key=f"salvar_{turma}"): 
+                # Aqui você já tem o edited_df com as presenças marcadas 
+                st.write("Dados salvos:") 
+                st.data_editor(edited_df, disabled=["nome", "presenca"], key=f"final_{turma}")
+                # Exemplo: enviar para supabase 
+                # supabase.table('alunos').upsert(edited_df.to_dict(orient="records")).execute()
+
