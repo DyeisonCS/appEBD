@@ -39,10 +39,11 @@ def tabturmas():
                 st.write("Dados salvos:")
                 st.data_editor(edited_df,disabled=["nome", "presenca"], key=f"final_{turma}")        # bloqueia tudo na tabela final
 
-            Exemplo: enviar para supabase
+            #Exemplo: enviar para supabase
             # supabase.table('alunos').upsert(edited_df.to_dict(orient="records")).execute()
 
             # Se já salvou, mantém a tabela final visível
             if st.session_state[saved_key]:
                 st.write("Dados salvos:")
                 st.data_editor(edited_df,disabled=["nome", "presenca"],key=f"final_{turma}")
+
