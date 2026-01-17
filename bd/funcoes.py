@@ -1,6 +1,7 @@
 import streamlit as st
 from supabase import create_client, Client
 import pandas as pd
+import datetime
 import os
 
 url = os.environ["SUPABASE_URL"]
@@ -64,6 +65,7 @@ def tabturmas():
                 if len(df_retorno) == 0:
                     supabase.table('fct_presenca').upsert( edited_df.to_dict(orient="records") ).execute()
                     st.success("Presenças salvas com sucesso!")
+
 
 
 
