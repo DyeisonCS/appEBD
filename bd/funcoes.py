@@ -16,26 +16,54 @@ lista_unica = list(df['classe'].unique())
 def tabturmas():
     tabs = st.tabs(lista_unica)
     for tab, turma in zip(tabs, lista_unica):
-        def listardados(turma):
+        def listaturma(turma):
             df = supabase.table('alunos').select('nome').filter('classe','eq',turma).execute()
             return df.data
+        
+                    
         with tab:
-            res = listardados(turma)
-            st.write('Turmas:')             #header
+            res = listaturma(turma)         #header
             df = pd.DataFrame(res)          #criando df
-            df['presenca'] = False         #criando coluna de presença com todos pendente de presença
+            df['presenca'] = False          #criando coluna de presença com todos pendente de presença
+            #st.data_editor(df)
+
+            salvar_key = f"salvar_{turma}" 
+            editor_key = f"editor_{turma}"
+
+            hoje = datetime.date.today().isoformat()
+            df_presenca = supabase.table('fct_presenca').select(
+                'nome','classe','presenca','data'
+                ).filter('data', 'eq', hoje).filter('classe','eq',turma).execute().data
+
+            if salvar_key not in st.session_state:
+                st.session_state[salvar_key] = len(df_presenca) > 0
+            # decide colunas bloqueadas
+            disabled_cols = ["nome"] if not st.session_state[salvar_key] else ["nome","presenca"]
             
-            
-            
-            # Verifica se o botão foi clicado 
+            if st.session_state[salvar_key]:
+                tabela = pd.DataFrame(df_presenca)
+                tabela = tabela[['nome', 'presenca']]
+            else:
+                tabela = df
+
+            if st.session_state[salvar_key]:
+                st.success("Presenças salvas com sucesso!")
+
             # Editor retorna o df atualizado 
-            edited_df = st.data_editor(df, disabled=["nome"], key=f"editor_{turma}") 
+            edited_df = st.data_editor(tabela, disabled=disabled_cols, key=editor_key, hide_index=False) 
+
             # Botão salvar 
-            if st.button('Salvar', key=f"salvar_{turma}"): 
-                # Aqui você já tem o edited_df com as presenças marcadas 
-                st.write("Dados salvos:") 
-                st.data_editor(edited_df, disabled=["nome", "presenca"], key=f"final_{turma}")
-                # Exemplo: enviar para supabase 
-                # supabase.table('alunos').upsert(edited_df.to_dict(orient="records")).execute()
+            if st.button("Salvar", key=f"btn_{turma}", disabled=st.session_state[salvar_key]): 
+                st.session_state[salvar_key] = True
+                edited_df["classe"] = turma 
+                edited_df["data"] = hoje
+                retorno = supabase.table('fct_presenca').select(
+                    'nome','classe','presenca','data'
+                    ).filter('data', 'eq', hoje).filter('classe','eq',turma).execute().data
+                df_retorno = pd.DataFrame(retorno)
+                if len(df_retorno) == 0:
+                    supabase.table('fct_presenca').upsert( edited_df.to_dict(orient="records") ).execute()
+                    st.success("Presenças salvas com sucesso!")
+
 
 
