@@ -43,15 +43,15 @@ def tabturmas():
             
             if st.session_state[salvar_key]:
                 tabela = pd.DataFrame(df_presenca)
-                tabela = tabela[['nome', 'presenca']]
+                tabela = tabela[['nome', 'presenca']].sort_values(by="nome").reset_index(drop=True)
             else:
-                tabela = df
+                tabela = df.sort_values(by="nome").reset_index(drop=True)
 
             if st.session_state[salvar_key]:
                 st.success("Presenças salvas com sucesso!")
 
             # Editor retorna o df atualizado 
-            edited_df = st.data_editor(tabela, disabled=disabled_cols, key=editor_key, hide_index=False) 
+            edited_df = st.data_editor(tabela, disabled=disabled_cols, key=editor_key, hide_index=True) 
 
             # Botão salvar 
             if st.button("Salvar", key=f"btn_{turma}", disabled=st.session_state[salvar_key]): 
@@ -65,6 +65,7 @@ def tabturmas():
                 if len(df_retorno) == 0:
                     supabase.table('fct_presenca').upsert( edited_df.to_dict(orient="records") ).execute()
                     st.success("Presenças salvas com sucesso!")
+
 
 
 
