@@ -63,8 +63,11 @@ def tabturmas():
                     ).filter('data', 'eq', hoje).filter('classe','eq',turma).execute().data
                 df_retorno = pd.DataFrame(retorno)
                 if len(df_retorno) == 0:
-                    supabase.table('fct_presenca').upsert( edited_df.to_dict(orient="records") ).execute()
-                    st.success("Presenças salvas com sucesso!")
+                    #supabase.table('fct_presenca').upsert( edited_df.to_dict(orient="records") ).execute()
+                    #st.success("Presenças salvas com sucesso!")
+                    progresso = len(edited_df)
+                    st.progress(progresso, text=turma)
+
 
 
 
