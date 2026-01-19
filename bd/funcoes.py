@@ -67,9 +67,7 @@ def tabturmas():
                     #st.success("Presenças salvas com sucesso!")
                     presentes = len(edited_df[edited_df['presenca'] == True])
                     progresso = presentes / len(edited_df)
-                    st.write(presentes)
-                    st.write(len(edited_df))
-                    st.write(progresso)
                     text_progresso = f'{progresso * 100: .2f}%'
                     st.progress(progresso, text= f'{turma} {text_progresso}')
+
 
