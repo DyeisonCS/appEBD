@@ -66,11 +66,12 @@ def tabturmas():
                     #supabase.table('fct_presenca').upsert( edited_df.to_dict(orient="records") ).execute()
                     #st.success("Presenças salvas com sucesso!")
                     presentes = len(edited_df[edited_df['presenca'] == True])
-                    progresso = float(presentes // len(edited_df))
+                    progresso = presentes / len(edited_df)
                     st.write(presentes)
                     st.write(len(edited_df))
                     st.write(progresso)
                     st.progress(progresso, text=turma)
+
 
 
 
