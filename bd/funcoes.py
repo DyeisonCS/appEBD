@@ -70,5 +70,6 @@ def tabturmas():
                     st.write(presentes)
                     st.write(len(edited_df))
                     st.write(progresso)
-                    st.write(f'{progresso}%')
+                    st.write(f'{progresso * 100 .2f}%')
                     st.progress(progresso, text=turma)
+
