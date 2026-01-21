@@ -3,10 +3,17 @@ from supabase import create_client, Client
 import pandas as pd
 import datetime
 import os
+from utils.styles import inject_mobile_css
 
-url = os.environ["SUPABASE_URL"]
-key = os.environ["SUPABASE_KEY"]
-supabase = create_client(url, key)
+inject_mobile_css()
+
+#url = os.environ["SUPABASE_URL"]
+#key = os.environ["SUPABASE_KEY"]
+#supabase = create_client(url, key)
+
+url = "https://vncdlatpuvniwwzdebtb.supabase.co"
+key = "sb_publishable_X5t9KZPR-0LJZF0BaMRT5w_rmhCUW6h"
+supabase: Client = create_client(url, key)
 
 turmas = supabase.table('alunos').select('classe').execute()
 
@@ -26,6 +33,8 @@ def tabturmas():
             res = listaturma(turma)         #header
             df = pd.DataFrame(res)          #criando df
             df['presenca'] = False          #criando coluna de presença com todos pendente de presença
+            df['biblia'] = False
+            df['revista'] = False
             #st.data_editor(df)
 
             salvar_key = f"salvar_{turma}" 
@@ -33,17 +42,21 @@ def tabturmas():
 
             hoje = datetime.date.today().isoformat()
             df_presenca = supabase.table('fct_presenca').select(
-                'nome','classe','presenca','data'
+                'nome','classe','presenca','biblia','revista','data'
                 ).filter('data', 'eq', hoje).filter('classe','eq',turma).execute().data
 
             if salvar_key not in st.session_state:
                 st.session_state[salvar_key] = len(df_presenca) > 0
             # decide colunas bloqueadas
-            disabled_cols = ["nome"] if not st.session_state[salvar_key] else ["nome","presenca"]
+            disabled_cols = ["nome"] if not st.session_state[salvar_key] else ["nome","presenca","biblia","revista"]
             
             if st.session_state[salvar_key]:
                 tabela = pd.DataFrame(df_presenca)
-                tabela = tabela[['nome', 'presenca']].sort_values(by="nome").reset_index(drop=True)
+                tabela = tabela[['nome', 'presenca','biblia','revista']].sort_values(by="nome").reset_index(drop=True)
+                presentes = len(tabela[tabela['presenca'] == True])
+                progresso = presentes / len(tabela)
+                text_progresso = f'{progresso * 100: .2f}%'
+                st.progress(progresso, text= f'{turma} {text_progresso}')
             else:
                 tabela = df.sort_values(by="nome").reset_index(drop=True)
 
@@ -61,13 +74,23 @@ def tabturmas():
                 retorno = supabase.table('fct_presenca').select(
                     'nome','classe','presenca','data'
                     ).filter('data', 'eq', hoje).filter('classe','eq',turma).execute().data
+
                 df_retorno = pd.DataFrame(retorno)
                 if len(df_retorno) == 0:
-                    #supabase.table('fct_presenca').upsert( edited_df.to_dict(orient="records") ).execute()
-                    #st.success("Presenças salvas com sucesso!")
-                    presentes = len(edited_df[edited_df['presenca'] == True])
-                    progresso = presentes / len(edited_df)
-                    text_progresso = f'{progresso * 100: .2f}%'
-                    st.progress(progresso, text= f'{turma} {text_progresso}')
+                    supabase.table('fct_presenca').upsert( edited_df.to_dict(orient="records") ).execute()
+                    st.success("Presenças salvas com sucesso!")
+                
+                presentes = len(edited_df[edited_df['presenca'] == True])
+                progresso = presentes / len(edited_df)
+                text_progresso = f'{progresso * 100: .2f}%'
+                st.progress(progresso, text= f'{turma} {text_progresso}')
+                    
 
 
+#def inseredados(nome, classe, presenca):
+#    data = {
+#        'nome': nome,
+#        'classe': classe,
+#        'presenca': presenca
+#    }
+#    supabase.table('alunos').insert(data).execute()

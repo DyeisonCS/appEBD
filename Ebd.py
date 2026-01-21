@@ -1,7 +1,9 @@
 import streamlit as st
 import pandas as pd
-from bd import funcoes
 from bd.database import database_segment
+from utils.styles import inject_mobile_css
+
+inject_mobile_css()
 
 st.set_page_config(
     page_icon= 'logo_ipb.png',
@@ -10,7 +12,4 @@ st.set_page_config(
 
 st.header('Escola Bíblica Dominical IPSO', text_alignment= "center") #write
 
-
 database_segment()
-
-
