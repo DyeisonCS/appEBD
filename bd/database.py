@@ -4,53 +4,60 @@ from bd import funcoes
 import pandas as pd
 import os
 import datetime
+from bd.banco import PresencaData
+from utils.styles import inject_mobile_css
 
-url = os.environ["SUPABASE_URL"]
-key = os.environ["SUPABASE_KEY"]
-supabase = create_client(url, key)
+inject_mobile_css()
 
+#url = os.environ["SUPABASE_URL"]
+#key = os.environ["SUPABASE_KEY"]
+#supabase = create_client(url, key)
+
+url = "https://vncdlatpuvniwwzdebtb.supabase.co"
+key = "sb_publishable_X5t9KZPR-0LJZF0BaMRT5w_rmhCUW6h"
+supabase: Client = create_client(url, key)
 
 
 def database_segment():
+    inject_mobile_css()
     #st.header("🗄 Database", help="Testando criação de abas e paginas.")
-    lista_alunos, cadastrar, turmas, ANIVERSARIANTES = \
-        st.tabs(["Listar Alunos", "Cadastrar", "Turmas", "ANIVERSARIANTES"])
+    lista_alunos, ANIVERSARIANTES = \
+        st.tabs(["Listar Alunos", "ANIVERSARIANTES"])
     
     with lista_alunos:
-        if st.button('Listar Alunos'):
-            #dados = funcoes.listardados()
-            #tb = pd.DataFrame(dados, columns=['ID', 'nome', 'data_nasc', 'classe'])
-            res = supabase.table('alunos').select('nome', 'classe').execute()
-            st.write('Alunos:')   #header
-            st.table(res.data)    
-            #st.table(tb)
+        diafiltro = st.date_input('Data Nascimento', min_value= datetime.date(2026, 1, 1), format="DD/MM/YYYY")
+        res = PresencaData(diafiltro)
+        tabela = pd.DataFrame(res)
+        totalalunospresentes = len(tabela)
 
-    with cadastrar:
-        nome = st.text_input('Nome')
-        data_nasc = st.date_input('Data Nascimento', min_value= datetime.date(1910, 1, 1), format="DD/MM/YYYY").strftime("%d/%m/%Y")
-        classe = st.selectbox('Turma', options=['Vencedores por Cristo', 'Soldados de Cristo', 'Jardim de Deus', 'Joias de Cristo'], index=None, placeholder='Selecione')
-        sexo = st.selectbox('Sexo', options=['masculino', 'feminino'], index=None, placeholder='Selecione')
+        if totalalunospresentes > 0:
+            lista_unica = list(tabela['classe'].unique())
+            if len(tabela) > 0:
+                for turma in lista_unica:
+                    #st.write(f'{turma}:')   #header
+                    #st.table(res.data) 
+                    #tabela = pd.DataFrame(res.data)
+                    tabelafor = tabela[['nome', 'presenca', 'classe']].sort_values(by="nome").reset_index(drop=True)
+                    tabelafiltrada = tabelafor[tabelafor['classe'] == turma]
 
-        if st.button('cadastrar Aluno'):
-            data = {
-                'nome': nome,
-                'data_nasc': data_nasc,
-                'classe': classe
-            }
-            supabase.table('alunos').insert(data).execute()
-            #funcoes.inseredados(nome, data_nasc, classe)
-            st.success('Adicionado')
+                    presentes = len(tabelafiltrada[tabelafiltrada['presenca'] == True])
+                    progresso = presentes / len(tabelafiltrada)
+                    text_progresso = f'{progresso * 100: .2f}%'
+                    st.progress(progresso, text= f'{turma} {text_progresso}')
+
+        #if st.button('Listar Alunos'):
+        #    #dados = funcoes.listardados()
+        #    #tb = pd.DataFrame(dados, columns=['ID', 'nome', 'data_nasc', 'classe'])
+        #    res = supabase.table('alunos').select('nome', 'classe').execute()
+        #    st.write('Alunos:')   #header
+        #    st.table(res.data)    
+        #    #st.table(tb)
 
 
+    
 
-    with turmas:
-        funcoes.tabturmas()
 
     with ANIVERSARIANTES:
         st.tabs(["Dyeison", "Rafael"])
     
-
-
-
-
 
