@@ -1,4 +1,5 @@
 from supabase import create_client, Client
+import os
 
 
 url = os.environ["SUPABASE_URL"]
@@ -10,3 +11,4 @@ def PresencaData(data):
     res = supabase.table('fct_presenca').select('nome', 'classe', 'presenca').filter('data', 'eq', data).execute()
 
     return res.data
+
