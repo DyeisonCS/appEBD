@@ -1,3 +1,11 @@
-import sqlite3
+from supabase import create_client, Client
 
-conexao = sqlite3.connect('EBD.db')
+
+url = os.environ["SUPABASE_URL"]
+key = os.environ["SUPABASE_KEY"]
+supabase = create_client(url, key)
+
+###Selecionar todas as presenças do dia, criar uma variável com a data que deseja retornar as presenças
+def PresencaData(data):
+    res = supabase.table('fct_presenca').select('nome', 'classe', 'presenca').filter('data', 'eq', data).execute()
+    return res.data
