@@ -9,13 +9,9 @@ from utils.styles import inject_mobile_css
 
 inject_mobile_css()
 
-#url = os.environ["SUPABASE_URL"]
-#key = os.environ["SUPABASE_KEY"]
-#supabase = create_client(url, key)
-
-url = "https://vncdlatpuvniwwzdebtb.supabase.co"
-key = "sb_publishable_X5t9KZPR-0LJZF0BaMRT5w_rmhCUW6h"
-supabase: Client = create_client(url, key)
+url = os.environ["SUPABASE_URL"]
+key = os.environ["SUPABASE_KEY"]
+supabase = create_client(url, key)
 
 
 st.header('👤 Novo Aluno', text_alignment= 'left')
@@ -33,4 +29,5 @@ if st.button('cadastrar Aluno'):
     }
     supabase.table('alunos').insert(data).execute()
     #funcoes.inseredados(nome, data_nasc, classe)
+
     st.success('Adicionado')
