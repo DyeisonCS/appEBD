@@ -12,3 +12,7 @@ def PresencaData(data):
 
     return res.data
 
+
+def RelatorioPresencaTurma(inicio, fim):
+    res = supabase.table('fct_presenca').select('nome', 'classe', 'presenca', 'data').filter('data', 'gte', inicio).filter('data', 'lte', fim).execute()
+    return res.data
