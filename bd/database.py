@@ -21,7 +21,7 @@ def database_segment():
         st.tabs(["Listar Alunos", "ANIVERSARIANTES"])
     
     with lista_alunos:
-        diafiltro = st.date_input('Data Nascimento', min_value= datetime.date(2026, 1, 1), format="DD/MM/YYYY")
+        diafiltro = st.date_input('Data Para Relatórios', min_value= datetime.date(2026, 1, 1), format="DD/MM/YYYY")
         res = PresencaData(diafiltro)
         tabela = pd.DataFrame(res)
         totalalunospresentes = len(tabela)
@@ -54,7 +54,8 @@ def database_segment():
 
 
     with ANIVERSARIANTES:
-        st.tabs(["Dyeison", "Rafael"])
+        #st.tabs(["Dyeison", "Rafael"])
     
+
 
 
