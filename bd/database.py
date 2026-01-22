@@ -54,8 +54,9 @@ def database_segment():
 
 
     with ANIVERSARIANTES:
-        #st.tabs(["Dyeison", "Rafael"])
+        st.tabs(["Dyeison", "Rafael"])
     
+
 
 
 
