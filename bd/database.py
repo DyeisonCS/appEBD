@@ -46,10 +46,31 @@ def database_segment():
                 tabela = tabelacompleta[tabelacompleta['data'] == datafor]
 
                 presentes = tabela['presenca'].sum()
-                #st.data_editor(tabela, key=dia)
+                matriculados = len(tabela)
+                percentual = f'{presentes / matriculados * 100: .0f}%'
 
-                with st.expander(f'📆 {datafor.strftime("%d/%m/%Y")} {datadia}:'): 
-                    #st.write(presentes)
+                with st.expander(f'📆 {datafor.strftime("%d/%m/%Y")} {datadia}:'):
+                    with st.container():
+
+                        tabela_md = f"""
+                        <table style="font-size:0.7rem;">
+                        <tr>
+                          <th><p style="text-align:center; margin-bottom:0.06rem">👥</p>Matriculados</th>
+                          <th><p style="text-align:center; margin-bottom:0.06rem">✅</p>Presentes</th>
+                          <th><p style="text-align:center; margin-bottom:0.06rem">❌</p>Ausentes</th>
+                          <th><p style="text-align:center; margin-bottom:0.06rem">📈</p>Percentual</th>
+                        </tr>
+                        <tr>
+                          <td>{matriculados}</td>
+                          <td>{presentes}</td>
+                          <td>{matriculados - presentes}</td>
+                          <td>{percentual}</td>
+                        </tr>
+                        </table>
+                        """
+
+                        st.markdown(tabela_md, unsafe_allow_html=True)
+                    
                     lista_unica = list(tabela['classe'].unique())
                     for turma in lista_unica:
                         tabelafor = tabela[['nome', 'presenca', 'classe']].sort_values(by="nome").reset_index(drop=True)
@@ -65,6 +86,7 @@ def database_segment():
     with ANIVERSARIANTES:
         st.tabs(["Dyeison", "Rafael"])
     
+
 
 
 
