@@ -6,7 +6,7 @@ from utils.styles import inject_mobile_css
 
 inject_mobile_css()
 
-st.write('📅 Selecionar Data')
+st.header('📊 Relatórios')
 
 inicio = datetime.date(2026, 1, 1)
 fim = datetime.date.today()
@@ -43,4 +43,5 @@ st.data_editor(qtde_presencas,
                        format="%.1f%%"
                    )
                }
+
 )
