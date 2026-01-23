@@ -5,12 +5,9 @@ import pandas as pd
 import os
 import datetime
 from bd.banco import PresencaData
-import locale
 from utils.styles import inject_mobile_css
 
 inject_mobile_css()
-
-locale.setlocale(locale.LC_TIME, "pt_BR.UTF-8")
 
 url = os.environ["SUPABASE_URL"]
 key = os.environ["SUPABASE_KEY"]
@@ -29,12 +26,22 @@ def database_segment():
         tabelacompleta = pd.DataFrame(res)
         totalalunospresentes = len(tabelacompleta)
 
+        dias_semana = { 
+            0: "Segunda-feira",
+            1: "Terça-feira",
+            2: "Quarta-feira",
+            3: "Quinta-feira",
+            4: "Sexta-feira",
+            5: "Sábado",
+            6: "Domingo",
+        }
+
         if totalalunospresentes > 0:
             lista_unica = list(tabelacompleta['data'].unique())
 
             for dia in lista_unica:
                 datafor = datetime.date.fromisoformat(dia)
-                datadia = datafor.strftime('%A')
+                datadia = dias_semana[datafor.weekday()]
                 tabelacompleta["data"] = pd.to_datetime(tabelacompleta["data"]).dt.date
                 tabela = tabelacompleta[tabelacompleta['data'] == datafor]
 
@@ -58,6 +65,7 @@ def database_segment():
     with ANIVERSARIANTES:
         st.tabs(["Dyeison", "Rafael"])
     
+
 
 
 
