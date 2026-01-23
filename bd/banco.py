@@ -7,12 +7,12 @@ key = os.environ["SUPABASE_KEY"]
 supabase = create_client(url, key)
 
 ###Selecionar todas as presenças do dia, criar uma variável com a data que deseja retornar as presenças
-def PresencaData(data):
-    res = supabase.table('fct_presenca').select('nome', 'classe', 'presenca').filter('data', 'eq', data).execute()
-
+def PresencaData():
+    res = supabase.table('fct_presenca').select('nome', 'classe', 'presenca', 'data').execute()
     return res.data
 
 
 def RelatorioPresencaTurma(inicio, fim):
     res = supabase.table('fct_presenca').select('nome', 'classe', 'presenca', 'data').filter('data', 'gte', inicio).filter('data', 'lte', fim).execute()
     return res.data
+
