@@ -23,7 +23,7 @@ def database_segment():
     with Resumo:
         #diafiltro = st.date_input('Data Nascimento', min_value= datetime.date(2026, 1, 1), format="DD/MM/YYYY")
         res = PresencaData()
-        tabelacompleta = pd.DataFrame(res)
+        tabelacompleta = pd.DataFrame(res).sort_values(by='data',ascending=False)
         totalalunospresentes = len(tabelacompleta)
 
         dias_semana = { 
@@ -86,6 +86,7 @@ def database_segment():
     with ANIVERSARIANTES:
         st.tabs(["Dyeison", "Rafael"])
     
+
 
 
 
