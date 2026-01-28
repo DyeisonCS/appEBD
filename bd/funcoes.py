@@ -86,17 +86,18 @@ def tabturmas():
                     'nome','classe','presenca','data'
                     ).filter('data', 'eq', hoje).filter('classe','eq',turma).execute().data
 
+                                    #voltando nomes originais das colunas para update
+                edited_df = edited_df.rename(
+                    columns={
+                        "✅":"presenca",
+                        "📖":"biblia",
+                        "📚":"revista"
+                    }
+                )
+
                 df_retorno = pd.DataFrame(retorno)
                 if len(df_retorno) == 0:
 
-                    #voltando nomes originais das colunas para update
-                    edited_df = edited_df.rename(
-                        columns={
-                            "✅":"presenca",
-                            "📖":"biblia",
-                            "📚":"revista"
-                        }
-                    )
                     supabase.table('fct_presenca').upsert( edited_df.to_dict(orient="records") ).execute()
                     st.success("Presenças salvas com sucesso!")
                 
@@ -115,4 +116,5 @@ def tabturmas():
 #    }
 
 #    supabase.table('alunos').insert(data).execute()
+
 
