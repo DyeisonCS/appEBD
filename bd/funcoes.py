@@ -43,8 +43,7 @@ def tabturmas():
 
             if salvar_key not in st.session_state:
                 st.session_state[salvar_key] = len(df_presenca) > 0
-            # decide colunas bloqueadas
-            disabled_cols = ["nome"] if not st.session_state[salvar_key] else ["nome","presenca","biblia","revista"]
+                
             
             if st.session_state[salvar_key]:
                 tabela = pd.DataFrame(df_presenca)
@@ -74,6 +73,9 @@ def tabturmas():
                     "revista": "📚"
                 }
             )
+            # decide colunas bloqueadas
+            disabled_cols = ["nome"] if not st.session_state[salvar_key] else ["nome","✅","📖","📚"]
+            
             edited_df = st.data_editor(tabela, disabled=disabled_cols, key=editor_key, hide_index=True,) 
 
             # Botão salvar 
@@ -116,5 +118,6 @@ def tabturmas():
 #    }
 
 #    supabase.table('alunos').insert(data).execute()
+
 
 
